@@ -1,0 +1,6 @@
+framework module Pods_Gitten {
+  umbrella header "Pods-Gitten-umbrella.h"
+
+  export *
+  module * { export * }
+}

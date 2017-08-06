@@ -1,0 +1,35 @@
+{
+  "name": "Gitten",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "react-native start",
+    "lint": "eslint src/*",
+    "run:a": "react-native run-android",
+    "reload:a": "adb shell am broadcast -a react.native.RELOAD",
+    "run:i": "react-native run-ios"
+  },
+  "dependencies": {
+    "axios": "^0.16.2",
+    "babel-eslint": "^7.2.3",
+    "bluebird": "^3.5.0",
+    "eslint": "3",
+    "eslint-config-airbnb": "^15.0.1",
+    "eslint-plugin-import": "^2.6.0",
+    "eslint-plugin-jsx-a11y": "^6.0.0",
+    "eslint-plugin-react": "^7.1.0",
+    "fetch-intercept": "^2.2.3",
+    "graphql": "^0.10.5",
+    "react": "16.0.0-alpha.12",
+    "react-native": "0.45.1",
+    "react-native-config": "^0.5.0",
+    "react-native-cookie": "^0.2.0",
+    "react-native-elements": "^0.13.0",
+    "react-native-navigation": "^1.1.178",
+    "react-native-vector-icons": "^4.2.0",
+    "react-redux": "^5.0.5",
+    "redux": "^3.7.0",
+    "redux-persist": "^4.8.1",
+    "redux-thunk": "^2.2.0"
+  }
+}
