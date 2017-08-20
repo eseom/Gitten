@@ -2,12 +2,14 @@
 
 export const navigatorStyle = {
   navBarTextFontSize: 14,
-  navBarTranslucent: true,
+  navBarTranslucent: false,
   drawUnderNavBar: false,
-  navBarTextColor: 'black',
-  navBarButtonColor: 'black',
-  // statusBarTextColorScheme: 'light',
+  navBarButtonColor: '#fff',
+  statusBarTextColorScheme: 'light',
+  statusBarTextColorSchemeSingleScreen: 'light',
   drawUnderTabBar: true,
 
   navBarLeftButtonFontSize: 14,
+  navBarBackgroundColor: '#24292e',
+  navBarTextColor: '#fff',
 }
