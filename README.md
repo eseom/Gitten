@@ -29,7 +29,7 @@ From project dir, run:
 1. Build and run (this will start a simulator if not already started)
 
 	```sh
-    yarn run-i # or react-native run-ios
+    yarn run:i # or react-native run-ios
 	```
 	This would also start a packager if not already started
 
@@ -42,7 +42,7 @@ From project dir, run:
 2. Build and run
 
 	```sh
-    yarn run-a # or react-native run-android
+    yarn run:a # or react-native run-android
 	```
 	This would also start a packager if not already started
 
