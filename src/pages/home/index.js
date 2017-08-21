@@ -14,7 +14,7 @@ import { connect } from 'react-redux'
 import { iconsMap } from '../../utils/AppIcons'
 import { fetchLast20Issues } from '../../redux/personal'
 import styles from './styles'
-import Component from '../../components'
+import Component from '../base'
 import { navigatorStyle as commonNavigatorStyle } from '../../styles' // eslint-disable-line
 
 const transDate = (dateString) => {

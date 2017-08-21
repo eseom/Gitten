@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { List, ListItem } from 'react-native-elements'
 import { Navigation } from 'react-native-navigation'
 
-import Component from '../../components'
+import Component from '../base'
 
 const getMenuItem = (newOptions) => {
   const defaultOptions = {

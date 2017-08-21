@@ -1,10 +1,11 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { View, Text } from 'react-native'
 import { connect } from 'react-redux'
 
 import { fetchRepository } from '../../redux/repository'
 import styles from './styles'
 import { navigatorStyle as commonNavigatorStyle } from '../../styles' // eslint-disable-line
+import Component from '../base'
 
 export default connect(
   store => ({

@@ -8,7 +8,7 @@ import axios from 'axios'
 import { connect } from 'react-redux'
 import Cookie from 'react-native-cookie'
 
-import Component from '../../components'
+import Component from '../base'
 import { registerUser } from '../../redux/app'
 import { navigatorStyle as commonNavigatorStyle } from '../../styles' // eslint-disable-line
 

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import {
   TouchableHighlight,
   RefreshControl,
@@ -12,6 +12,7 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import { fetchRepositories } from '../../redux/repository'
 import styles from './styles'
 import { navigatorStyle as commonNavigatorStyle } from '../../styles' // eslint-disable-line
+import Component from '../base'
 
 const transDate = (dateString) => {
   const time = new Date(dateString)

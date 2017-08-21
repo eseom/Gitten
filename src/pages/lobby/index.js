@@ -9,7 +9,7 @@ import { Navigation } from 'react-native-navigation'
 import { connect } from 'react-redux'
 
 import styles from './styles'
-import Component from '../../components'
+import Component from '../base'
 import { selectUser } from '../../redux/app'
 import { iconsMap } from '../../utils/AppIcons'
 import { navigatorStyle as commonNavigatorStyle } from '../../styles' // eslint-disable-line
