@@ -108,14 +108,7 @@ export default connect(
         <TouchableHighlight
           underlayColor="transparent"
           onPress={() => {
-            this.props.navigator.push({
-              screen: 'app.Repo',
-              name: 'repo',
-              title: `${this.props.user.login}/${item.name}`,
-              passProps: {
-                name: item.name,
-              },
-            })
+            this.pushRepository(this.props.user.login, item.name)
           }}
         >
           <View style={{ flexDirection: 'column' }}>

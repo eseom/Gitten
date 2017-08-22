@@ -3,6 +3,15 @@ import axios from 'axios'
 const initialState = {
   repository: null,
   repositories: {},
+
+  trends: [],
+}
+
+const yyyymmdd = function (dat) {
+  const mm = dat.getMonth() + 1 // getMonth() is zero-based
+  const dd = dat.getDate()
+
+  return [dat.getFullYear(), (mm > 9 ? '' : '0') + mm, (dd > 9 ? '' : '0') + dd].join('-')
 }
 
 export const reducer = (state = initialState, action) => {
@@ -26,6 +35,12 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         repository: action.repository,
+      }
+    }
+    case 'FETCH_TRENDS': {
+      return {
+        ...state,
+        trends: action.repositories,
       }
     }
     default:
@@ -70,7 +85,6 @@ export const fetchRepositories = username =>
     })
       .then(response => response.data.data)
       .then((data) => {
-        console.log(data.viewer.repositories.edges.map(e => e.node))
         dispatch({
           type: 'FETCH_REPOSITORIES',
           username,
@@ -82,8 +96,34 @@ export const fetchRepositories = username =>
       })
   }
 
+export const fetchRepository = (owner, repo) =>
+  async (dispatch, getState) => {
+    const accessToken = getState().app.accessToken
+    dispatch({
+      type: 'START_FETCH_REPOSITORY',
+    })
+    axios({
+      method: 'GET',
+      url: `https://api.github.com/repos/${owner}/${repo}`,
+      // url: 'https://api.github.com/graphql',
+      headers: {
+        Accept: 'application/json',
+        authorization: `Bearer ${accessToken}`,
+      },
+    })
+      .then(response => response.data)
+      .then((data) => {
+        dispatch({
+          type: 'FETCH_REPOSITORY',
+          repository: data,
+        })
+      })
+      .catch((e) => {
+        console.log(e)
+      })
+  }
 
-export const fetchRepository = name =>
+export const fetchRepositoryGraphql = (owner, repo) =>
   async (dispatch, getState) => {
     const accessToken = getState().app.accessToken
     dispatch({
@@ -95,12 +135,11 @@ export const fetchRepository = name =>
       headers: {
         Accept: 'application/json',
         authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
       },
       data: {
         query: `{
           viewer {
-            repository(name: "${name}") {
+            repository(name: "${repo}") {
               name
               commitComments(last: 1) {
                 edges {
@@ -154,6 +193,37 @@ export const fetchRepository = name =>
         dispatch({
           type: 'FETCH_REPOSITORY',
           repository: data.viewer.repository,
+        })
+      })
+      .catch((e) => {
+        console.log(e)
+      })
+  }
+
+export const fetchTrends = () =>
+  async (dispatch, getState) => {
+    const now = new Date()
+    now.setDate(now.getDate() - 7)
+    const targetDate = yyyymmdd(now)
+    const accessToken = getState().app.accessToken
+
+    dispatch({
+      type: 'START_FETCH_TREND',
+    })
+    axios({
+      method: 'GET',
+      url: `https://api.github.com/search/repositories?sort=stars&order=desc&q=language:java&q=created:>${targetDate}`,
+      headers: {
+        Accept: 'application/json',
+        authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    })
+      .then(response => response.data)
+      .then((data) => {
+        dispatch({
+          type: 'FETCH_TRENDS',
+          repositories: data.items,
         })
       })
       .catch((e) => {

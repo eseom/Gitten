@@ -20,4 +20,16 @@ export default class extends Component {
     this.width = Dimensions.get('window').width
     this.height = Dimensions.get('window').height
   }
+  pushRepository(owner, repo) {
+    this.props.navigator.push({
+      screen: 'app.Repo',
+      name: 'repo',
+      title: 'Gitten',
+      subtitle: `${owner}/${repo}`,
+      passProps: {
+        owner,
+        repo,
+      },
+    })
+  }
 }

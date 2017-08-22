@@ -63,6 +63,20 @@ const getTabsConfig = icons => ({
         icon: icons['md-people'],
       }],
     },
+  }, {
+    label: 'Trend',
+    screen: 'app.Trend',
+    ...(Platform.OS === 'ios' ? {
+      title: 'Trend',
+    }
+      : {
+        title: 'Gitten',
+        subtitle: 'Trend',
+      }),
+    icon: icons['md-trending-up'],
+    navigatorStyle: commonNavigatorStyle,
+    navigatorButtons: {
+    },
   }],
   appStyle: {
     tabBarButtonColor: '#555',

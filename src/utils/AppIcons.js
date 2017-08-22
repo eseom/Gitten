@@ -16,6 +16,7 @@ const icons = {
   'md-exit': [30],
   'md-home': [30],
   'md-briefcase': [30],
+  'md-trending-up': [30],
 
   'md-people': [30],
 }

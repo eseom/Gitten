@@ -15,8 +15,8 @@ export default connect(
 )(class extends Component {
   static navigatorStyle = { ...commonNavigatorStyle }
 
-  componentDidMount() {
-    this.props.dispatch(fetchRepository(this.props.name))
+  componentWillMount() {
+    this.props.dispatch(fetchRepository(this.props.owner, this.props.repo))
   }
   render() {
     const r = this.props.repository
@@ -31,14 +31,14 @@ export default connect(
     return (
       <View style={styles.container}>
         <View style={{ padding: 10 }}>
+          <Text>{r.full_name}</Text>
           <Text>{r.description}</Text>
-          <Text>{r.url}</Text>
-          <Text>forks: {r.forks.totalCount}</Text>
-          <Text>stars: {r.stargazers.totalCount}</Text>
-          <Text>{r.languages.edges.map(n => n.node.name).join(', ')}</Text>
-          <Text>repository topics: {r.repositoryTopics.edges.map(n => n.node.topic.name).join(', ')}</Text>
+          <Text>{r.html_url}</Text>
+          <Text>forks: {r.forks_count}</Text>
+          <Text>stars: {r.stargazers_count}</Text>
+          <Text>{r.language}</Text>
         </View>
-      </View >
+      </View>
     )
   }
 })

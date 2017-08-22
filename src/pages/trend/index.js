@@ -12,7 +12,7 @@ import { Navigation } from 'react-native-navigation'
 import { connect } from 'react-redux'
 
 import { iconsMap } from '../../utils/AppIcons'
-import { fetchLast20Issues } from '../../redux/personal'
+import { fetchTrends } from '../../redux/repository'
 import styles from './styles'
 import Component from '../base'
 import { navigatorStyle as commonNavigatorStyle } from '../../styles' // eslint-disable-line
@@ -25,8 +25,7 @@ const transDate = (dateString) => {
 export default connect(
   store => ({
     user: store.app.user,
-    accessToken: store.app.accessToken,
-    mainEntries: store.personal.mainEntries,
+    trends: store.repository.trends,
   }),
   dispatch => ({ dispatch }),
 )(class extends Component {
@@ -36,7 +35,7 @@ export default connect(
     refreshing: false,
     list: [],
 
-    last20Issues: new ListView.DataSource({
+    trends: new ListView.DataSource({
       rowHasChanged: (r1, r2) => (
         r1.id !== r2.id
       ),
@@ -46,8 +45,6 @@ export default connect(
     }),
   }
 
-  width
-  height
   load = false
 
   constructor(props) {
@@ -57,9 +54,6 @@ export default connect(
       this.props.navigator.setOnNavigatorEvent(this._onNavigatorEvent.bind(this))
       this.load = true
     }
-
-    this.width = Dimensions.get('window').width
-    this.height = Dimensions.get('window').height
 
     this._onRefresh = this._onRefresh.bind(this)
     this._renderRow = this._renderRow.bind(this)
@@ -97,17 +91,15 @@ export default connect(
 
   componentWillMount() {
     this._getIssues()
-
-    Cookie.clear()
   }
 
   async _getIssues(callback) {
-    this.props.dispatch(fetchLast20Issues(callback))
+    this.props.dispatch(fetchTrends(callback))
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      last20Issues: this._getDS(nextProps.mainEntries),
+      trends: this._getDS(nextProps.trends),
     })
   }
 
@@ -116,26 +108,9 @@ export default connect(
       <View style={styles.container}>
         <ListView
           enableEmptySections
-          renderSectionHeader={(t, a) => {
-            if (a === 'global') {
-              return (
-                <View style={{ flexDirection: 'row', width: this.width, backgroundColor: '#fff', padding: 10, paddingBottom: 20 }}>
-                  <Text style={{ fontSize: 16, fontWeight: 'bold' }}>logged user: {this.props.user.login}</Text>
-                </View>
-              )
-            }
-            let title = ''
-            if (a === 'last20Issues') {
-              title = 'latest 20 issues'
-            } else {
-              title = 'latest 20 repositories'
-            }
-            return (
-              <View style={{ flexDirection: 'row', width: this.width, backgroundColor: '#fff', height: 40, padding: 10, borderBottomColor: '#ddd', borderBottomWidth: 1 }}>
-                <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{title}</Text>
-              </View>
-            )
-          }}
+          renderSectionHeader={(t) => (
+            <View />
+          )}
           refreshControl={
             <RefreshControl
               refreshing={this.state.refreshing}
@@ -143,7 +118,7 @@ export default connect(
             />
           }
           contentContainerStyle={styles.list}
-          dataSource={this.state.last20Issues}
+          dataSource={this.state.trends}
           renderRow={this._renderRow}
           onEndReachedThreshold={300}
         />
@@ -152,24 +127,22 @@ export default connect(
   }
 
   _renderRow(item, sectionKey) {
-    const width = this.width
+    const p = item.full_name.split('/')
+    const owner = p[0]
+    const repo = p[1]
     return (
       <View style={{ width: this.width, padding: 10, paddingLeft: 14, borderBottomColor: '#ddd', borderBottomWidth: 1 }}>
         <TouchableHighlight
           underlayColor="transparent"
           onPress={() => {
-            this.pushRepository(this.props.user.login, item.name)
+            this.pushRepository(owner, repo)
           }}
         >
           <View style={{ flexDirection: 'row' }}>
-            {sectionKey === 'last20Issues' ?
-              <Text numberOfLines={1} style={{ flex: 1 }} ellipsizeMode="tail">{item.title}</Text>
-              :
-              <View style={{ flex: 1, flexDirection: 'row' }}>
-                <Text numberOfLines={1} style={{ flex: 1 }} ellipsizeMode="tail">{item.name}</Text>
-                <Text ellipsizeMode="tail" style={{ alignContent: 'flex-end', fontSize: 12 }}>{transDate(item.updatedAt)}</Text>
-              </View>
-            }
+            <View style={{ flex: 1, flexDirection: 'row' }}>
+              <Text numberOfLines={1} style={{ flex: 1 }} ellipsizeMode="tail">{item.name}</Text>
+              <Text ellipsizeMode="tail" style={{ alignContent: 'flex-end', fontSize: 12 }}>{transDate(item.updated_at)}</Text>
+            </View>
           </View>
         </TouchableHighlight>
       </View>
@@ -186,12 +159,7 @@ export default connect(
   }
 
   _getDS(obj) {
-    const data = {
-      global: [],
-      ...obj,
-    }
-    return this.state.last20Issues.cloneWithRowsAndSections(
-      data,
-    )
+    console.log(obj)
+    return this.state.trends.cloneWithRows(obj)
   }
 })

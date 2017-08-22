@@ -52,7 +52,6 @@ export default connect(
   }
 
   componentWillMount() {
-    console.log(this.props.accessToken)
     if (!this.props.accessToken) {
       this.props.navigator.showModal({
         screen: 'app.Lobby',

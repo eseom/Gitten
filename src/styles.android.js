@@ -2,11 +2,10 @@
 
 export const navigatorStyle = {
   navBarTextFontSize: 13,
-  navBarTextColor: '#ccc',
-  navBarBackgroundColor: '#fff',
   topBarElevationShadowEnabled: true,
   // navBarComponentAlignment: 'center', // center/fill
   // navBarTitleTextCentered: true,
+
   drawUnderTabBar: false,
   drawUnderNavBar: false,
 
@@ -15,6 +14,14 @@ export const navigatorStyle = {
 
   statusBarColor: '#000',
   statusBarTextColorScheme: 'light',
+
+  navBarSubtitleColor: '#fff',
+
+  navBarBackgroundColor: '#24292e',
+  navBarTextColor: '#777',
+  // navBarTextColor: '#ccc',
+  // navBarBackgroundColor: '#ffr',
+  navBarButtonColor: '#fff',
 
   navBarHidden: false,
   navBarHideOnScroll: false,
