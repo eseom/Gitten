@@ -3219,6 +3219,10 @@ react-native-elements@^0.13.0:
     react-native-side-menu "^0.20.1"
     react-native-tab-navigator "^0.3.3"
 
+react-native-loading-view@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-loading-view/-/react-native-loading-view-1.0.0.tgz#928d194b11cbf556ba9c91ff94b6763349530451"
+
 react-native-navigation@^1.1.178:
   version "1.1.205"
   resolved "https://registry.yarnpkg.com/react-native-navigation/-/react-native-navigation-1.1.205.tgz#eb7ff639f97e7f5bde42f38d2b11b7a6ce06a2c0"

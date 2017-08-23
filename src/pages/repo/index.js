@@ -1,5 +1,6 @@
 import React from 'react'
 import { View, Text } from 'react-native'
+import LoadingView from 'react-native-loading-view'
 import { connect } from 'react-redux'
 
 import { fetchRepository } from '../../redux/repository'
@@ -21,11 +22,10 @@ export default connect(
   render() {
     const r = this.props.repository
     if (r === null) {
-      return <View style={styles.container} />
-    }
-    if (!r || !r.url) {
       return (
-        <View />
+        <View style={styles.container}>
+          <LoadingView loading />
+        </View>
       )
     }
     return (

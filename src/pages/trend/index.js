@@ -7,7 +7,6 @@ import {
   ListView,
   View,
 } from 'react-native'
-import Cookie from 'react-native-cookie'
 import { Navigation } from 'react-native-navigation'
 import { connect } from 'react-redux'
 
@@ -16,6 +15,7 @@ import { fetchTrends } from '../../redux/repository'
 import styles from './styles'
 import Component from '../base'
 import { navigatorStyle as commonNavigatorStyle } from '../../styles' // eslint-disable-line
+import RepoCard from '../../components/repo-card'
 
 const transDate = (dateString) => {
   const time = new Date(dateString)
@@ -131,6 +131,14 @@ export default connect(
     const owner = p[0]
     const repo = p[1]
     return (
+      <RepoCard
+        item={item}
+        onPress={() => {
+          this.pushRepository(item.owner.login, item.name)
+        }}
+      />
+    )
+    return (
       <View style={{ width: this.width, padding: 10, paddingLeft: 14, borderBottomColor: '#ddd', borderBottomWidth: 1 }}>
         <TouchableHighlight
           underlayColor="transparent"
@@ -159,7 +167,6 @@ export default connect(
   }
 
   _getDS(obj) {
-    console.log(obj)
     return this.state.trends.cloneWithRows(obj)
   }
 })

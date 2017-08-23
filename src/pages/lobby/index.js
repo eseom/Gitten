@@ -49,7 +49,7 @@ const getTabsConfig = icons => ({
         title: 'Gitten',
         subtitle: 'Repository',
       }),
-    icon: icons['md-briefcase'],
+    icon: icons.repo,
     navigatorStyle: commonNavigatorStyle,
     navigatorButtons: {
       leftButtons: [{

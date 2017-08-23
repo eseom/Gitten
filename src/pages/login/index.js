@@ -44,13 +44,11 @@ export default connect(
   loaded = false
 
   async _callback(data) {
-    console.log(data)
     if (
       data.loading === true ||
       data.title !== 'OAuth application authorized' ||
       !(data.url.includes('http://localhost') || data.url.includes('gitten://oauth'))
     ) return
-    console.log('----------', data)
     if (this.loaded) return
     this.loaded = true
     this.setState({ catched: true })
@@ -70,7 +68,7 @@ export default connect(
       },
     })
       .then(resp => resp.data)
-      .catch(e => console.info('----0', e.response))
+      .catch(e => console.error(e))
 
     if (!response.access_token) return
 
@@ -81,7 +79,7 @@ export default connect(
       },
     })
       .then(resp => resp.data)
-      .catch(e => console.info('----1', e.response))
+      .catch(e => console.error(e))
 
     user.accessToken = response.access_token
     this.props.dispatch(registerUser(user))

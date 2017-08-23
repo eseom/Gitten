@@ -1,6 +1,7 @@
 /* eslint-disable new-cap */
 import { PixelRatio } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import Octicons from 'react-native-vector-icons/Octicons'
 
 const navIconSize = (__DEV__ === false && Platform.OS === 'android') ? PixelRatio.getPixelSizeForLayoutSize(40) : 40 // eslint-disable-line
 const replaceSuffixPattern = /--(active|big|small|very-big)/g
@@ -19,6 +20,8 @@ const icons = {
   'md-trending-up': [30],
 
   'md-people': [30],
+
+  repo: [30, '#000', Octicons],
 }
 
 const iconsMap = {}
@@ -26,7 +29,7 @@ const iconsLoaded = new Promise((resolve, reject) => {
   Promise.all(
     Object.keys(icons).map(iconName =>
       // IconName--suffix--other-suffix is just the mapping name in iconsMap
-      Ionicons.getImageSource(
+      (icons[iconName][2] || Ionicons).getImageSource(
         iconName.replace(replaceSuffixPattern, ''),
         icons[iconName][0],
         icons[iconName][1],

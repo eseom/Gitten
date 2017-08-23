@@ -13,11 +13,7 @@ import { fetchRepositories } from '../../redux/repository'
 import styles from './styles'
 import { navigatorStyle as commonNavigatorStyle } from '../../styles' // eslint-disable-line
 import Component from '../base'
-
-const transDate = (dateString) => {
-  const time = new Date(dateString)
-  return `${(time.getMonth() + 1)}/${time.getDate()} ${time.getHours()}:${time.getMinutes()}`
-}
+import RepoCard from '../../components/repo-card'
 
 export default connect(
   store => ({
@@ -68,17 +64,13 @@ export default connect(
   render() {
     const { user: { login } } = this.props
     const { repositories } = this.state
-    if (!repositories) {
-      return (
-        <View />
-      )
-    }
+
     return (
       <View style={styles.container}>
         <ListView
           enableEmptySections
           renderSectionHeader={(t, a) => (
-            <View style={{ flexDirection: 'row', width: this.width, backgroundColor: '#fff', padding: 10, paddingBottom: 20 }}>
+            <View style={{ flexDirection: 'row', width: this.width, backgroundColor: '#fff', padding: 10, paddingLeft: 14, paddingBottom: 20 }}>
               <Text style={{ fontSize: 16, fontWeight: 'bold' }}>https://github.com/{login}</Text>
               <Text>{' '}</Text>
               <Text style={{ fontSize: 16 }}>repositories</Text>
@@ -97,42 +89,18 @@ export default connect(
           onEndReached={this._loadMore}
           onEndReachedThreshold={300}
         />
-
       </View >
     )
   }
 
   _renderRow(item, sectionKey) {
     return (
-      <View style={{ width: this.width, padding: 10, paddingLeft: 14, borderBottomColor: '#ddd', borderBottomWidth: 1 }}>
-        <TouchableHighlight
-          underlayColor="transparent"
-          onPress={() => {
-            this.pushRepository(this.props.user.login, item.name)
-          }}
-        >
-          <View style={{ flexDirection: 'column' }}>
-            <View style={{ flex: 1, flexDirection: 'row' }}>
-              <Text numberOfLines={1} style={{ flex: 1 }} ellipsizeMode="tail">{item.name}</Text>
-              <Text ellipsizeMode="tail" style={{ alignContent: 'flex-end', fontSize: 12 }}>{transDate(item.updatedAt)}</Text>
-            </View>
-            <View style={{ flex: 1, flexDirection: 'row' }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Icon name="star" />
-                <Text>{' '}</Text>
-                <Text>{item.stargazers.totalCount}</Text>
-              </View>
-              <Text>{' '}</Text>
-              <Text>{' '}</Text>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Icon name="code-fork" />
-                <Text>{' '}</Text>
-                <Text>{item.forks.totalCount}</Text>
-              </View>
-            </View>
-          </View>
-        </TouchableHighlight>
-      </View >
+      <RepoCard
+        item={item}
+        onPress={() => {
+          this.pushRepository(this.props.user.login, item.name)
+        }}
+      />
     )
   }
 

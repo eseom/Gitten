@@ -119,7 +119,7 @@ export default connect(
           renderSectionHeader={(t, a) => {
             if (a === 'global') {
               return (
-                <View style={{ flexDirection: 'row', width: this.width, backgroundColor: '#fff', padding: 10, paddingBottom: 20 }}>
+                <View style={{ flexDirection: 'row', width: this.width, backgroundColor: '#fff', padding: 14, paddingBottom: 20 }}>
                   <Text style={{ fontSize: 16, fontWeight: 'bold' }}>logged user: {this.props.user.login}</Text>
                 </View>
               )
@@ -131,7 +131,7 @@ export default connect(
               title = 'latest 20 repositories'
             }
             return (
-              <View style={{ flexDirection: 'row', width: this.width, backgroundColor: '#fff', height: 40, padding: 10, borderBottomColor: '#ddd', borderBottomWidth: 1 }}>
+              <View style={{ flexDirection: 'row', width: this.width, backgroundColor: '#fff', height: 40, padding: 10, paddingLeft: 14, borderBottomColor: '#ddd', borderBottomWidth: 1 }}>
                 <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{title}</Text>
               </View>
             )
@@ -152,7 +152,6 @@ export default connect(
   }
 
   _renderRow(item, sectionKey) {
-    const width = this.width
     return (
       <View style={{ width: this.width, padding: 10, paddingLeft: 14, borderBottomColor: '#ddd', borderBottomWidth: 1 }}>
         <TouchableHighlight

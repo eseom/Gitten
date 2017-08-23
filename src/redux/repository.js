@@ -37,6 +37,12 @@ export const reducer = (state = initialState, action) => {
         repository: action.repository,
       }
     }
+    case 'START_FETCH_TRENDS': {
+      return {
+        ...state,
+        trends: [],
+      }
+    }
     case 'FETCH_TRENDS': {
       return {
         ...state,
@@ -49,6 +55,38 @@ export const reducer = (state = initialState, action) => {
 }
 
 export const fetchRepositories = username =>
+  async (dispatch, getState) => {
+    const now = new Date()
+    now.setDate(now.getDate() - 7)
+    const targetDate = yyyymmdd(now)
+    const accessToken = getState().app.accessToken
+
+    dispatch({
+      type: 'START_FETCH_TREND',
+    })
+    axios({
+      method: 'GET',
+      url: `https://api.github.com/users/${username}/repos?type=all&sort=updated&direction=desc`,
+      headers: {
+        Accept: 'application/json',
+        authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    })
+      .then(response => response.data)
+      .then((data) => {
+        dispatch({
+          type: 'FETCH_REPOSITORIES',
+          username,
+          data,
+        })
+      })
+      .catch((e) => {
+        console.log(e)
+      })
+  }
+
+export const fetchRepositoriesGraphql = username =>
   async (dispatch, getState) => {
     const accessToken = getState().app.accessToken
     dispatch({
@@ -200,6 +238,10 @@ export const fetchRepositoryGraphql = (owner, repo) =>
       })
   }
 
+export const startFetchTrends = () => ({
+  type: 'START_FETCH_TREND',
+})
+
 export const fetchTrends = () =>
   async (dispatch, getState) => {
     const now = new Date()
@@ -207,9 +249,6 @@ export const fetchTrends = () =>
     const targetDate = yyyymmdd(now)
     const accessToken = getState().app.accessToken
 
-    dispatch({
-      type: 'START_FETCH_TREND',
-    })
     axios({
       method: 'GET',
       url: `https://api.github.com/search/repositories?sort=stars&order=desc&q=language:java&q=created:>${targetDate}`,
