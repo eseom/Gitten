@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Dimensions } from 'react-native'
-// import Config from 'react-native-config'
+import { getTitle } from '../utils'
 
 export default class extends Component {
   width
@@ -24,8 +24,8 @@ export default class extends Component {
     this.props.navigator.push({
       screen: 'app.Repo',
       name: 'repo',
-      title: 'Gitten',
-      subtitle: `${owner}/${repo}`,
+      ...getTitle(`${owner}/${repo}`),
+      backButtonTitle: '',
       passProps: {
         owner,
         repo,

@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 
 export const navigatorStyle = {
+  navBarTextColor: '#fff',
   navBarTextFontSize: 14,
   navBarTranslucent: false,
   drawUnderNavBar: false,
@@ -8,8 +9,8 @@ export const navigatorStyle = {
   statusBarTextColorScheme: 'light',
   statusBarTextColorSchemeSingleScreen: 'light',
   drawUnderTabBar: true,
+  navBarSubtitleColor: '#fff',
 
   navBarLeftButtonFontSize: 14,
   navBarBackgroundColor: '#24292e',
-  navBarTextColor: '#fff',
 }

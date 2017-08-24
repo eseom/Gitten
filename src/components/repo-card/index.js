@@ -20,9 +20,10 @@ export default class extends Component {
     const avatarWidth = 42
     const { item } = this.props
     return (
-      <View style={{ width: this.width, padding: 10, paddingLeft: 14, borderBottomColor: '#ddd', borderBottomWidth: 1 }}>
+      <View style={{ width: this.width, borderBottomColor: '#ddd', borderBottomWidth: 1 }}>
         <TouchableHighlight
-          underlayColor="transparent"
+          style={{ padding: 10 }}
+          underlayColor="#EFEFEF"
           onPress={(e) => {
             this.props.onPress(e)
           }}

@@ -21,7 +21,7 @@ const icons = {
 
   'md-people': [30],
 
-  repo: [30, '#000', Octicons],
+  repo: [26, '#000', Octicons],
 }
 
 const iconsMap = {}

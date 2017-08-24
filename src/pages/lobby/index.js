@@ -2,7 +2,6 @@ import React from 'react'
 import {
   Text,
   View,
-  Platform,
 } from 'react-native'
 import { List, ListItem } from 'react-native-elements'
 import { Navigation } from 'react-native-navigation'
@@ -12,19 +11,14 @@ import styles from './styles'
 import Component from '../base'
 import { selectUser } from '../../redux/app'
 import { iconsMap } from '../../utils/AppIcons'
+import { getTitle } from '../../utils'
 import { navigatorStyle as commonNavigatorStyle } from '../../styles' // eslint-disable-line
 
 const getTabsConfig = icons => ({
   tabs: [{
     label: 'Home',
     screen: 'app.Home',
-    ...(Platform.OS === 'ios' ? {
-      title: 'Home',
-    }
-      : {
-        title: 'Gitten',
-        subtitle: 'Home',
-      }),
+    ...getTitle('Home'),
     icon: icons['md-home'],
     navigatorStyle: commonNavigatorStyle,
     navigatorButtons: {
@@ -42,13 +36,7 @@ const getTabsConfig = icons => ({
   }, {
     label: 'Repository',
     screen: 'app.Repositories',
-    ...(Platform.OS === 'ios' ? {
-      title: 'Repository',
-    }
-      : {
-        title: 'Gitten',
-        subtitle: 'Repository',
-      }),
+    ...getTitle('Repository'),
     icon: icons.repo,
     navigatorStyle: commonNavigatorStyle,
     navigatorButtons: {
@@ -66,21 +54,20 @@ const getTabsConfig = icons => ({
   }, {
     label: 'Trend',
     screen: 'app.Trend',
-    ...(Platform.OS === 'ios' ? {
-      title: 'Trend',
-    }
-      : {
-        title: 'Gitten',
-        subtitle: 'Trend',
-      }),
+    ...getTitle('Trend'),
     icon: icons['md-trending-up'],
     navigatorStyle: commonNavigatorStyle,
     navigatorButtons: {
     },
   }],
+  tabsStyle: {
+    tabBarButtonColor: '#999',
+    tabBarSelectedButtonColor: '#222',
+    tabBarBackgroundColor: '#EFEFEF',
+  },
   appStyle: {
-    tabBarButtonColor: '#555',
-    tabBarSelectedButtonColor: 'black',
+    tabBarButtonColor: '#888',
+    tabBarSelectedButtonColor: '#222',
     tabBarBackgroundColor: '#EFEFEF',
   },
   drawer: {
@@ -120,8 +107,7 @@ export default connect(
     if (event.id === 'add') {
       this.props.navigator.push({
         screen: 'app.Login',
-        title: 'gitten',
-        subtitle: 'Add a Github user',
+        ...getTitle('Add a Github user'),
         navigatorStyle: {
           // navBarHidden: true,
         },
