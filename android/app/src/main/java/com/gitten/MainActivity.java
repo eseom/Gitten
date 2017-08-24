@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.widget.ImageView;
@@ -19,7 +20,7 @@ public class MainActivity extends SplashActivity {
         TextView textView = new TextView(this);
         ImageView imageView = new ImageView(this);
 
-        view.setBackgroundColor(Color.parseColor("#ffffff"));
+        view.setBackgroundColor(Color.parseColor("#343434"));
         view.setGravity(Gravity.CENTER);
 
 //        view.addView(textView);
@@ -32,6 +33,7 @@ public class MainActivity extends SplashActivity {
         display.getSize(size);
         int width = size.x;
         int height = size.y;
+        Log.e("werqwer", width+":"+height);
         Bitmap resize = Bitmap.createScaledBitmap(orgImage, width, height, true);
         iv.setImageBitmap(resize);
 
