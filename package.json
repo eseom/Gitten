@@ -7,18 +7,15 @@
     "lint": "eslint src/*",
     "run:a": "react-native run-android",
     "reload:a": "adb shell am broadcast -a react.native.RELOAD",
-    "run:i": "react-native run-ios"
+    "run:i": "react-native run-ios",
+    "test": "jest --watch"
+  },
+  "jest": {
+    "preset": "react-native"
   },
   "dependencies": {
     "axios": "^0.16.2",
-    "babel-eslint": "^7.2.3",
     "bluebird": "^3.5.0",
-    "eslint": "3",
-    "eslint-config-airbnb": "^15.0.1",
-    "eslint-plugin-import": "^2.6.0",
-    "eslint-plugin-jsx-a11y": "^6.0.0",
-    "eslint-plugin-react": "^7.1.0",
-    "fetch-intercept": "^2.2.3",
     "graphql": "^0.10.5",
     "react": "16.0.0-alpha.12",
     "react-native": "0.45.1",
@@ -32,5 +29,17 @@
     "redux": "^3.7.0",
     "redux-persist": "^4.8.1",
     "redux-thunk": "^2.2.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^7.2.3",
+    "babel-jest": "^20.0.3",
+    "babel-preset-react-native": "^3.0.1",
+    "eslint": "3",
+    "eslint-config-airbnb": "^15.0.1",
+    "eslint-plugin-import": "^2.6.0",
+    "eslint-plugin-jsx-a11y": "^6.0.0",
+    "eslint-plugin-react": "^7.1.0",
+    "jest": "^20.0.4",
+    "react-test-renderer": "16.0.0-alpha.12"
   }
 }

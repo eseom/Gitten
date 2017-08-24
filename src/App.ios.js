@@ -4,7 +4,6 @@ import { View } from 'react-native'
 import { Navigation } from 'react-native-navigation'
 import axios from 'axios'
 import { Provider } from 'react-redux'
-import fetchIntercept from 'fetch-intercept'
 import { registerScreens } from './Screens'
 
 import { iconsMap, iconsLoaded } from './utils/AppIcons'
