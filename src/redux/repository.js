@@ -140,7 +140,7 @@ export const fetchRepository = (owner, repo) =>
     dispatch({
       type: 'START_FETCH_REPOSITORY',
     })
-    axios({
+    const data = await axios({
       method: 'GET',
       url: `https://api.github.com/repos/${owner}/${repo}`,
       // url: 'https://api.github.com/graphql',
@@ -150,15 +150,37 @@ export const fetchRepository = (owner, repo) =>
       },
     })
       .then(response => response.data)
-      .then((data) => {
-        dispatch({
-          type: 'FETCH_REPOSITORY',
-          repository: data,
-        })
-      })
-      .catch((e) => {
-        console.log(e)
-      })
+
+    const languages = await axios({
+      method: 'GET',
+      url: data.languages_url,
+      headers: {
+        Accept: 'application/json',
+        authorization: `Bearer ${accessToken}`,
+      },
+    })
+      .then(response => response.data)
+
+    const topics = await axios({
+      method: 'GET',
+      url: `https://api.github.com/repos/${owner}/${repo}/topics`,
+      headers: {
+        Accept: 'application/vnd.github.mercy-preview+json',
+        authorization: `Bearer ${accessToken}`,
+      },
+    })
+      .then(response => response.data.names)
+
+    data.languages = languages
+    data.topics = topics
+
+    dispatch({
+      type: 'FETCH_REPOSITORY',
+      repository: data,
+    })
+    // .catch((e) => {
+    //   console.log(e)
+    // })
   }
 
 export const fetchRepositoryGraphql = (owner, repo) =>
