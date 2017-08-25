@@ -1,8 +1,9 @@
 import React from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, Linking, ScrollView, WebView } from 'react-native'
 import LoadingView from 'react-native-loading-view'
 import { Badge } from 'react-native-elements'
 import { connect } from 'react-redux'
+import marked from 'marked'
 
 import { fetchRepository } from '../../redux/repository'
 import styles from './styles'
@@ -10,17 +11,37 @@ import { navigatorStyle as commonNavigatorStyle } from '../../styles' // eslint-
 import Component from '../base'
 import Icon from 'react-native-vector-icons/Octicons'
 
+const injectScript = `
+(function () {
+  window.onclick = function(e) {
+    e.preventDefault();
+    window.postMessage(e.target.href);
+    e.stopPropagation()
+  }
+}());
+`
+
 export default connect(
   store => ({
+    store,
     repository: store.repository.repository,
   }),
   dispatch => ({ dispatch }),
-)(class extends Component {
+)(class Repo extends Component {
   static navigatorStyle = { ...commonNavigatorStyle }
 
   componentWillMount() {
     this.props.dispatch(fetchRepository(this.props.owner, this.props.repo))
   }
+
+  onMessage({ nativeEvent }) {
+    const data = nativeEvent.data
+
+    if (data !== undefined && data !== null) {
+      Linking.openURL(data)
+    }
+  }
+
   render() {
     const r = this.props.repository
     if (r === null) {
@@ -30,6 +51,8 @@ export default connect(
         </View>
       )
     }
+    r.content = r.content ? marked(r.content) : ''
+
     return (
       <View style={styles.container}>
         <View style={{ padding: 10 }}>
@@ -72,6 +95,12 @@ export default connect(
             <Text>{r.html_url}</Text>
           </View> */}
         </View>
+
+        <WebView
+          injectedJavaScript={injectScript}
+          source={{ backgroundColor: 'pink', flex: 1, html: r.content }}
+          onMessage={this.onMessage}
+        />
       </View>
     )
   }

@@ -1,4 +1,5 @@
 import axios from 'axios'
+import base64 from 'base-64'
 
 const initialState = {
   repository: null,
@@ -173,6 +174,23 @@ export const fetchRepository = (owner, repo) =>
 
     data.languages = languages
     data.topics = topics
+
+    try {
+      const content = await axios({
+        method: 'GET',
+        url: `https://api.github.com/repos/${owner}/${repo}/contents/README.md`,
+        headers: {
+          Accept: 'application/vnd.github.mercy-preview+json',
+          authorization: `Bearer ${accessToken}`,
+        },
+      })
+        .then(response => response.data.content)
+
+      const readme = base64.decode(content.replace(/\\n/g, ''))
+      data.content = readme.toString()
+    } catch (e) {
+
+    }
 
     dispatch({
       type: 'FETCH_REPOSITORY',
