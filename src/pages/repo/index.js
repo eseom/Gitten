@@ -1,5 +1,6 @@
 import React from 'react'
-import { View, Text, Linking, ScrollView, WebView } from 'react-native'
+import { View, Text, WebView, Linking, ScrollView } from 'react-native'
+
 import LoadingView from 'react-native-loading-view'
 import { Badge } from 'react-native-elements'
 import { connect } from 'react-redux'
@@ -12,6 +13,10 @@ import Component from '../base'
 import Icon from 'react-native-vector-icons/Octicons'
 
 const injectScript = `
+setTimeout(function () {
+  html = document.documentElement;
+  window.postMessage('height_' + html.offsetHeight);
+}, 500)
 (function () {
   window.onclick = function(e) {
     e.preventDefault();
@@ -20,6 +25,8 @@ const injectScript = `
   }
 }());
 `
+
+const customStyle = '<style>* {max-width: 100%;} body {font-family: sans-serif;}</style>'
 
 export default connect(
   store => ({
@@ -30,16 +37,36 @@ export default connect(
 )(class Repo extends Component {
   static navigatorStyle = { ...commonNavigatorStyle }
 
+  state = {
+    height: 0,
+    heightReceived: false,
+  }
+
+  constructor(props) {
+    super(props)
+
+    this.onMessage = this.onMessage.bind(this)
+  }
+
   componentWillMount() {
     this.props.dispatch(fetchRepository(this.props.owner, this.props.repo))
   }
 
   onMessage({ nativeEvent }) {
     const data = nativeEvent.data
-
-    if (data !== undefined && data !== null) {
-      Linking.openURL(data)
+    // debug check loop: console.log(data)
+    if (data.substring(0, 6) === 'height') {
+      // prevent loop [render => get height => set height => render]
+      if (!this.state.heightReceived) {
+        this.setState({
+          height: parseInt(data.split('_')[1], 10),
+          heightReceived: true,
+        })
+      }
+      return
     }
+    if (data === 'undefined' || data === null) return
+    Linking.openURL(data)
   }
 
   render() {
@@ -52,9 +79,8 @@ export default connect(
       )
     }
     r.content = r.content ? marked(r.content) : ''
-
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <View style={{ padding: 10 }}>
           <View style={{ marginBottom: 10 }}>
             <Text>{r.description}</Text>
@@ -96,12 +122,16 @@ export default connect(
           </View> */}
         </View>
 
+
         <WebView
+          style={{ height: this.state.height, padding: this.state.heightReceived ? 10 : 0 }}
+          automaticallyAdjustContentInsets={false}
+          scrollEnabled={false}
           injectedJavaScript={injectScript}
-          source={{ backgroundColor: 'pink', flex: 1, html: r.content }}
+          source={{ html: customStyle + r.content }}
           onMessage={this.onMessage}
         />
-      </View>
+      </ScrollView>
     )
   }
 })
