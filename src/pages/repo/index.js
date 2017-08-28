@@ -1,5 +1,6 @@
 import React from 'react'
 import { View, Text, WebView, Linking, ScrollView } from 'react-native'
+import { List, ListItem } from 'react-native-elements'
 
 import LoadingView from 'react-native-loading-view'
 import { Badge } from 'react-native-elements'
@@ -117,6 +118,40 @@ export default connect(
               <Text>{r.subscribers_count}</Text>
             </View>
           </View>
+
+          <View>
+            <List containerStyle={{ marginBottom: 20 }}>
+              <ListItem
+                containerStyle={{ backgroundColor: 'white' }}
+                leftIcon={<Icon name="git-commit" style={{ fontSize: 30 }} />}
+                titleStyle={{ paddingLeft: 10, fontSize: 15 }}
+                roundAvatar
+                underlayColor={'#EFEFEF'}
+                chevronColor={'#000'}
+                onLongPress={() => {
+                  console.log('long')
+                }}
+                title={'commits'}
+                onPress={() => {
+                }}
+              />
+              <ListItem
+                containerStyle={{ backgroundColor: 'white' }}
+                leftIcon={<Icon name="code" style={{ fontSize: 29 }} />}
+                titleStyle={{ paddingLeft: 10, fontSize: 15 }}
+                roundAvatar
+                underlayColor={'#EFEFEF'}
+                chevronColor={'#000'}
+                onLongPress={() => {
+                  console.log('long')
+                }}
+                title="source"
+                onPress={() => {
+                }}
+              />
+            </List>
+          </View>
+
 
           {/* <View style={{ flexDirection: 'row' }}>
             <Icon name="link-external" style={{ fontSize: 18, alignItems: 'center' }} />

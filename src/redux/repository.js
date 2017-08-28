@@ -152,7 +152,9 @@ export const fetchRepository = (owner, repo) =>
     })
       .then(response => response.data)
 
-    const languages = await axios({
+    const promises = []
+
+    promises.push(axios({
       method: 'GET',
       url: data.languages_url,
       headers: {
@@ -160,9 +162,9 @@ export const fetchRepository = (owner, repo) =>
         authorization: `Bearer ${accessToken}`,
       },
     })
-      .then(response => response.data)
+      .then(response => response.data))
 
-    const topics = await axios({
+    promises.push(axios({
       method: 'GET',
       url: `https://api.github.com/repos/${owner}/${repo}/topics`,
       headers: {
@@ -170,35 +172,32 @@ export const fetchRepository = (owner, repo) =>
         authorization: `Bearer ${accessToken}`,
       },
     })
-      .then(response => response.data.names)
+      .then(response => response.data.names))
 
-    data.languages = languages
-    data.topics = topics
+    promises.push(axios({
+      method: 'GET',
+      url: `https://api.github.com/repos/${owner}/${repo}/contents/README.md`,
+      headers: {
+        Accept: 'application/vnd.github.mercy-preview+json',
+        authorization: `Bearer ${accessToken}`,
+      },
+    })
+      .then(response => response.data.content)
+      .catch(e => e.reponse))
 
+    const result = await Promise.all(promises)
+
+    data.languages = result[0]
+    data.topics = result[1]
+    data.content = ''
     try {
-      const content = await axios({
-        method: 'GET',
-        url: `https://api.github.com/repos/${owner}/${repo}/contents/README.md`,
-        headers: {
-          Accept: 'application/vnd.github.mercy-preview+json',
-          authorization: `Bearer ${accessToken}`,
-        },
-      })
-        .then(response => response.data.content)
-
-      const readme = base64.decode(content.replace(/\\n/g, ''))
-      data.content = readme.toString()
-    } catch (e) {
-
-    }
+      data.content = base64.decode(result[2].replace(/\\n/g, '')).toString()
+    } catch (e) { }
 
     dispatch({
       type: 'FETCH_REPOSITORY',
       repository: data,
     })
-    // .catch((e) => {
-    //   console.log(e)
-    // })
   }
 
 export const fetchRepositoryGraphql = (owner, repo) =>
