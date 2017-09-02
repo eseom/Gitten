@@ -9,6 +9,7 @@ import Login from './pages/login'
 import Home from './pages/home'
 import Repositories from './pages/repositories'
 import Trend from './pages/trend'
+import Commits from './pages/commits'
 import Repo from './pages/repo'
 
 export function registerScreens(store, Provider) {
@@ -19,5 +20,6 @@ export function registerScreens(store, Provider) {
   Navigation.registerComponent('app.Home', () => Home, store, Provider)
   Navigation.registerComponent('app.Repositories', () => Repositories, store, Provider)
   Navigation.registerComponent('app.Trend', () => Trend, store, Provider)
+  Navigation.registerComponent('app.Commits', () => Commits, store, Provider)
   Navigation.registerComponent('app.Repo', () => Repo, store, Provider)
 }

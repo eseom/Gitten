@@ -12,6 +12,7 @@ import styles from './styles'
 import { navigatorStyle as commonNavigatorStyle } from '../../styles' // eslint-disable-line
 import Component from '../base'
 import Icon from 'react-native-vector-icons/Octicons'
+import { getTitle } from '../../utils'
 
 const injectScript = `
 setTimeout(function () {
@@ -129,11 +130,20 @@ export default connect(
                 underlayColor={'#EFEFEF'}
                 chevronColor={'#000'}
                 onLongPress={() => {
-                  console.log('long')
+                }}
+                onPress={() => {
+                  this.props.navigator.push({
+                    screen: 'app.Commits',
+                    name: 'commits',
+                    ...getTitle(`${this.props.owner}/${this.props.repo}`),
+                    backButtonTitle: '',
+                    passProps: {
+                      owner: this.props.owner,
+                      repo: this.props.repo,
+                    },
+                  })
                 }}
                 title={'commits'}
-                onPress={() => {
-                }}
               />
               <ListItem
                 containerStyle={{ backgroundColor: 'white' }}

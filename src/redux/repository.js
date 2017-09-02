@@ -6,6 +6,7 @@ const initialState = {
   repositories: {},
 
   trends: [],
+  commits: [],
 }
 
 const yyyymmdd = function (dat) {
@@ -48,6 +49,12 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         trends: action.repositories,
+      }
+    }
+    case 'FETCH_COMMITS': {
+      return {
+        ...state,
+        commits: action.commits,
       }
     }
     default:
@@ -215,48 +222,55 @@ export const fetchRepositoryGraphql = (owner, repo) =>
       },
       data: {
         query: `{
-          viewer {
-            repository(name: "${repo}") {
-              name
-              commitComments(last: 1) {
-                edges {
-                  node {
-                    body
+          repo: search(first: 1, query: "${owner}/${repo}", type: REPOSITORY) {
+            edges {
+              node {
+                ... on Repository {
+                  owner {
+                    login
                   }
-                }
-              }
-              languages(last: 100) {
-                edges {
-                  node {
-                    color
-                    name
-                  }
-                }
-              }
-              repositoryTopics(last: 100) {
-                edges {
-                  node {
-                    topic {
-                      name
+                  name
+                  commitComments(last: 1) {
+                    edges {
+                      node {
+                        body
+                      }
                     }
                   }
-                }
-              }
-              forks {
-                totalCount
-              }
-              stargazers {
-                totalCount
-              } 
-              description
-              isFork
-              id
-              url
-              isPrivate
-              pullRequests(first: 20, orderBy: {field: UPDATED_AT direction: DESC}) {
-                edges {
-                  node {
-                      title
+                  languages(last: 100) {
+                    edges {
+                      node {
+                        color
+                        name
+                      }
+                    }
+                  }
+                  repositoryTopics(last: 100) {
+                    edges {
+                      node {
+                        topic {
+                          name
+                        }
+                      }
+                    }
+                  }
+                  forks {
+                    totalCount
+                  }
+                  stargazers {
+                    totalCount
+                  } 
+                  description
+                  isFork
+                  id
+                  url
+                  isPrivate
+                  pullRequests(first: 20, orderBy: {field: UPDATED_AT direction: DESC}) {
+                    edges {
+                      node {
+                          title
+                      }
+                    }
                   }
                 }
               }
@@ -267,9 +281,10 @@ export const fetchRepositoryGraphql = (owner, repo) =>
     })
       .then(response => response.data.data)
       .then((data) => {
+        console.log(data)
         dispatch({
           type: 'FETCH_REPOSITORY',
-          repository: data.viewer.repository,
+          repository: data.repo.edges[0].node,
         })
       })
       .catch((e) => {
@@ -302,6 +317,67 @@ export const fetchTrends = () =>
         dispatch({
           type: 'FETCH_TRENDS',
           repositories: data.items,
+        })
+      })
+      .catch((e) => {
+        console.log(e)
+      })
+  }
+
+export const fetchCommits = (owner, repo, callback) =>
+  async (dispatch, getState) => {
+    const now = new Date()
+    now.setDate(now.getDate() - 7)
+    const targetDate = yyyymmdd(now)
+    const accessToken = getState().app.accessToken
+
+    axios({
+      method: 'POST',
+      url: 'https://api.github.com/graphql',
+      headers: {
+        Accept: 'application/json',
+        authorization: `Bearer ${accessToken}`,
+      },
+      data: {
+        query: `{
+          repository(owner: "${owner}", name: "${repo}") {
+            ref(qualifiedName: "master") {
+              target {
+                ... on Commit {
+                  id
+                  history(first: 50) {
+                    pageInfo {
+                      hasNextPage
+                    }
+                    edges {
+                      node {
+                        committedDate
+                        messageHeadline
+                        oid
+                        message
+                        author {
+                          avatarUrl
+                          name
+                          email
+                          date
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }`,
+      },
+    })
+      .then(response => response.data.data)
+      .then((data) => {
+        const history = data.repository.ref.target.history
+        dispatch({
+          type: 'FETCH_COMMITS',
+          commits: history.edges.map(t => t.node),
+          // pageInfo
         })
       })
       .catch((e) => {
