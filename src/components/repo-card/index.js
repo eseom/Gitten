@@ -7,7 +7,6 @@ import {
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Octicons'
 
-import styles from './styles'
 import Component from '../base'
 
 const transDate = (dateString) => {
@@ -18,7 +17,7 @@ const transDate = (dateString) => {
 export default class extends Component {
   render() {
     const avatarWidth = 42
-    const { name, owner, updatedAt, stargazers, forks, style = {}  } = this.props
+    const { name, owner, updatedAt, stargazers, forks, style = {} } = this.props
     return (
       <View style={style}>
         <TouchableHighlight
