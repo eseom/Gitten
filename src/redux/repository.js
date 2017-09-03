@@ -112,7 +112,6 @@ export const fetchRepositories = login =>
 
 export const fetchRepository = (owner, repo) =>
   async (dispatch, getState) => {
-    const accessToken = getState().app.accessToken
     dispatch({
       type: 'START_FETCH_REPOSITORY',
     })
@@ -121,7 +120,6 @@ export const fetchRepository = (owner, repo) =>
       url: 'https://api.github.com/graphql',
       headers: {
         Accept: 'application/json',
-        authorization: `Bearer ${accessToken}`,
       },
       data: {
         query: `{
@@ -208,7 +206,6 @@ export const fetchRepository = (owner, repo) =>
       .then((data) => {
         const r = data.repository
         r.repositoryTopics = r.repositoryTopics.edges.map(t => t.node)
-        console.log(r.languages)
         r.languages.items = r.languages.edges.map(t => ({
           ...t.node,
           size: t.size,
@@ -233,13 +230,11 @@ export const fetchTrends = () =>
     const now = new Date()
     now.setDate(now.getDate() - 7)
     const targetDate = yyyymmdd(now)
-    const accessToken = getState().app.accessToken
     axios({
       method: 'POST',
       url: 'https://api.github.com/graphql',
       headers: {
         Accept: 'application/json',
-        authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       data: {
@@ -281,17 +276,11 @@ export const fetchTrends = () =>
 
 export const fetchCommits = (owner, repo, callback) =>
   async (dispatch, getState) => {
-    const now = new Date()
-    now.setDate(now.getDate() - 7)
-    const targetDate = yyyymmdd(now)
-    const accessToken = getState().app.accessToken
-
     axios({
       method: 'POST',
       url: 'https://api.github.com/graphql',
       headers: {
         Accept: 'application/json',
-        authorization: `Bearer ${accessToken}`,
       },
       data: {
         query: `{
