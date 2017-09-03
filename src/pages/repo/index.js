@@ -151,7 +151,7 @@ export default connect(
                     key={i}
                     containerStyle={{ marginBottom: 4, marginRight: 4 }}
                     value={t.topic.name}
-                    textStyle={{ color: 'white' }}
+                    textStyle={{ fontSize: 12, color: 'white' }}
                   />
                 ))}
               </View>
