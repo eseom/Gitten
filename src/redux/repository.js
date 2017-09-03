@@ -210,9 +210,12 @@ export const fetchRepository = (owner, repo) =>
       .then((data) => {
         const r = data.repository
         r.repositoryTopics = r.repositoryTopics.edges.map(t => t.node)
-        r.languages.items = r.languages.edges.map((t) => {
-          return { ...t.node, size: t.size }
-        })
+        console.log(r.languages)
+        r.languages.items = r.languages.edges.map(t => ({
+          ...t.node,
+          size: t.size,
+          color: (t.node.color === null ? '#EFEFEF' : t.node.color),
+        }))
         dispatch({
           type: 'FETCH_REPOSITORY',
           repository: r,
