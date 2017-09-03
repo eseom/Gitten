@@ -14,13 +14,15 @@ const reducers = combineReducers({
   repository,
 })
 
-export default function configureStore(onCompletion) {
-  const enhancer = compose(
-    applyMiddleware(thunk, promise),
-  )
-  const store = createStore(reducers, enhancer, compose(
-    autoRehydrate(),
-  ))
-  persistStore(store, { storage: AsyncStorage }, onCompletion)
-  return store
-}
+export default () =>
+  new Promise((resolve) => {
+    const enhancer = compose(
+      applyMiddleware(thunk, promise),
+    )
+    const store = createStore(reducers, enhancer, compose(
+      autoRehydrate(),
+    ))
+    persistStore(store, { storage: AsyncStorage }, () => {
+      resolve(store)
+    })
+  })
