@@ -28,7 +28,33 @@ setTimeout(function () {
 }());
 `
 
-const customStyle = '<style>* {max-width: 100%;} body {font-family: sans-serif;}</style>'
+const customStyle = `
+<style>
+  * {max-width: 100%;}
+  body {
+    font-size: 0.8em;
+    font-family: sans-serif;
+  }
+  h1 {font-size: 1.8em;}
+  h2 {font-size: 1.7em;}
+  h3 {font-size: 1.6em;}
+  h4 {font-size: 1.5em;}
+  h5 {font-size: 1.3em;}
+  h6 {font-size: 1.1em;}
+  pre {
+    padding: 4px;
+    background: #EFEFEF;
+    white-space: pre-wrap; /* CSS3*/
+    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+    white-space: -pre-wrap; /* Opera 4-6 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    word-wrap: break-all; /* Internet Explorer 5.5+ */ 
+  }
+  a {
+    color: #444;
+  }
+</style>
+`
 
 export default connect(
   store => ({
@@ -82,103 +108,105 @@ export default connect(
     }
     const readme = r.readme && r.readme.text ? marked(r.readme.text) : ''
     return (
-      <ScrollView style={styles.container}>
-        <View style={{ padding: 10 }}>
-          <View style={{ marginBottom: 10 }}>
-            <Text>{r.description ? r.description : '(no description)'}</Text>
-          </View>
+      <View style={styles.container}>
+        <ScrollView style={{ flex: 1 }}>
+          <View style={{ padding: 10 }}>
+            <View style={{ marginBottom: 10 }}>
+              <Text>{r.description ? r.description : '(no description)'}</Text>
+            </View>
 
-          {r.languages.items.map(l => (
-            <Text key={l.id}>{l.size} {l.name}</Text>
-          ))}
+            {r.languages && r.languages.items && r.languages.items.map(l => (
+              <Text key={l.id}>{l.size} {l.name}</Text>
+            ))}
 
-          {r.repositoryTopics.length > 0 ?
-            <View style={{ marginTop: 20, flexDirection: 'row', flexWrap: 'wrap' }}>
-              {r.repositoryTopics.map((t, i) => (
-                <Badge
-                  key={i}
-                  containerStyle={{ marginBottom: 4, marginRight: 4 }}
-                  value={t.topic.name}
-                  textStyle={{ color: 'white' }}
+            {r.repositoryTopics.length > 0 ?
+              <View style={{ marginTop: 20, flexDirection: 'row', flexWrap: 'wrap' }}>
+                {r.repositoryTopics.map((t, i) => (
+                  <Badge
+                    key={i}
+                    containerStyle={{ marginBottom: 4, marginRight: 4 }}
+                    value={t.topic.name}
+                    textStyle={{ color: 'white' }}
+                  />
+                ))}
+              </View>
+              : null}
+
+            <View style={{ flexDirection: 'row', borderWidth: 1, borderColor: '#ddd', marginTop: 10 }}>
+              <View style={{ flexDirection: 'row', padding: 10, flex: 1, justifyContent: 'center' }}>
+                <Icon name="star" style={{ fontSize: 15, marginRight: 5 }} />
+                <Text>{r.stargazers.totalCount}</Text>
+              </View>
+              <View style={{ flexDirection: 'row', padding: 10, flex: 1, justifyContent: 'center', borderLeftWidth: 1, borderColor: '#ddd' }}>
+                <Icon name="repo-forked" style={{ fontSize: 15, marginRight: 5 }} />
+                <Text>{r.forks.totalCount}</Text>
+              </View>
+              <View style={{ flexDirection: 'row', padding: 10, flex: 1, justifyContent: 'center', borderLeftWidth: 1, borderColor: '#ddd' }}>
+                <Icon name="eye" style={{ fontSize: 15, marginRight: 5 }} />
+                <Text>{r.watchers.totalCount}</Text>
+              </View>
+            </View>
+
+            <View>
+              <List containerStyle={{ marginBottom: 20 }}>
+                <ListItem
+                  containerStyle={{ backgroundColor: 'white' }}
+                  leftIcon={<Icon name="git-commit" style={{ fontSize: 30 }} />}
+                  titleStyle={{ paddingLeft: 10, fontSize: 15 }}
+                  roundAvatar
+                  underlayColor={'#EFEFEF'}
+                  chevronColor={'#000'}
+                  onLongPress={() => {
+                  }}
+                  onPress={() => {
+                    this.props.navigator.push({
+                      screen: 'app.Commits',
+                      name: 'commits',
+                      ...getTitle(`${this.props.owner}/${this.props.repo}`),
+                      backButtonTitle: '',
+                      passProps: {
+                        owner: this.props.owner,
+                        repo: this.props.repo,
+                      },
+                    })
+                  }}
+                  title={'commits'}
                 />
-              ))}
+                <ListItem
+                  containerStyle={{ backgroundColor: 'white' }}
+                  leftIcon={<Icon name="code" style={{ fontSize: 29 }} />}
+                  titleStyle={{ paddingLeft: 10, fontSize: 15 }}
+                  roundAvatar
+                  underlayColor={'#EFEFEF'}
+                  chevronColor={'#000'}
+                  onLongPress={() => {
+                    console.log('long')
+                  }}
+                  title="source"
+                  onPress={() => {
+                  }}
+                />
+              </List>
             </View>
-            : null}
 
-          <View style={{ flexDirection: 'row', borderWidth: 1, borderColor: '#ddd', marginTop: 10 }}>
-            <View style={{ flexDirection: 'row', padding: 10, flex: 1, justifyContent: 'center' }}>
-              <Icon name="star" style={{ fontSize: 15, marginRight: 5 }} />
-              <Text>{r.stargazers.totalCount}</Text>
-            </View>
-            <View style={{ flexDirection: 'row', padding: 10, flex: 1, justifyContent: 'center', borderLeftWidth: 1, borderColor: '#ddd' }}>
-              <Icon name="repo-forked" style={{ fontSize: 15, marginRight: 5 }} />
-              <Text>{r.forks.totalCount}</Text>
-            </View>
-            <View style={{ flexDirection: 'row', padding: 10, flex: 1, justifyContent: 'center', borderLeftWidth: 1, borderColor: '#ddd' }}>
-              <Icon name="eye" style={{ fontSize: 15, marginRight: 5 }} />
-              <Text>{r.watchers.totalCount}</Text>
-            </View>
-          </View>
-
-          <View>
-            <List containerStyle={{ marginBottom: 20 }}>
-              <ListItem
-                containerStyle={{ backgroundColor: 'white' }}
-                leftIcon={<Icon name="git-commit" style={{ fontSize: 30 }} />}
-                titleStyle={{ paddingLeft: 10, fontSize: 15 }}
-                roundAvatar
-                underlayColor={'#EFEFEF'}
-                chevronColor={'#000'}
-                onLongPress={() => {
-                }}
-                onPress={() => {
-                  this.props.navigator.push({
-                    screen: 'app.Commits',
-                    name: 'commits',
-                    ...getTitle(`${this.props.owner}/${this.props.repo}`),
-                    backButtonTitle: '',
-                    passProps: {
-                      owner: this.props.owner,
-                      repo: this.props.repo,
-                    },
-                  })
-                }}
-                title={'commits'}
-              />
-              <ListItem
-                containerStyle={{ backgroundColor: 'white' }}
-                leftIcon={<Icon name="code" style={{ fontSize: 29 }} />}
-                titleStyle={{ paddingLeft: 10, fontSize: 15 }}
-                roundAvatar
-                underlayColor={'#EFEFEF'}
-                chevronColor={'#000'}
-                onLongPress={() => {
-                  console.log('long')
-                }}
-                title="source"
-                onPress={() => {
-                }}
-              />
-            </List>
-          </View>
-
-          {/* <View style={{ flexDirection: 'row' }}>
+            {/* <View style={{ flexDirection: 'row' }}>
             <Icon name="link-external" style={{ fontSize: 18, alignItems: 'center' }} />
             <Text>{r.html_url}</Text>
           </View> */}
-        </View>
+          </View>
 
 
-        <WebView
-          style={{ height: this.state.height, padding: this.state.heightReceived ? 10 : 0 }}
-          automaticallyAdjustContentInsets={false}
-          scrollEnabled={false}
-          injectedJavaScript={injectScript}
-          startInLoadingState
-          source={{ html: customStyle + readme }}
-          onMessage={this.onMessage}
-        />
-      </ScrollView>
+          <WebView
+            style={{ height: this.state.height, padding: this.state.heightReceived ? 10 : 0 }}
+            automaticallyAdjustContentInsets={false}
+            scrollEnabled={false}
+            injectedJavaScript={injectScript}
+            startInLoadingState
+            source={{ html: customStyle + readme }}
+            onMessage={this.onMessage}
+          />
+        </ScrollView>
+      </View>
     )
   }
 })

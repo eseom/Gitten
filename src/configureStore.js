@@ -4,7 +4,7 @@ import thunk from 'redux-thunk'
 import { persistStore, autoRehydrate } from 'redux-persist'
 import promise from './promise'
 
-import app from './redux/app'
+import { reducer as app } from './redux/app'
 import personal from './redux/personal'
 import { reducer as repository } from './redux/repository'
 

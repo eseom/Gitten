@@ -6,8 +6,15 @@ const initialState = {
   users: [],
 }
 
-export default function (state = initialState, action) {
+export const reducer = (state = initialState, action) => {
   switch (action.type) {
+    // case 'CLEAR': {
+    //   return {
+    //     ...state,
+    //     users: [],
+    //     accessToken: '',
+    //   }
+    // }
     case 'SELECT': {
       const { user } = action
       return {
@@ -18,12 +25,19 @@ export default function (state = initialState, action) {
     }
     case 'REGISTER': {
       const { user } = action
+
+      let replaced = false
+      const users = state.users.map((u) => {
+        if (u.id === user.id) {
+          replaced = true
+          return user
+        }
+        return u
+      })
+      if (!replaced) users.push(user)
       return {
         ...state,
-        users: [
-          ...state.users,
-          user,
-        ],
+        users,
       }
     }
     case 'SIGNIN': {
