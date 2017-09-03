@@ -106,7 +106,20 @@ export default connect(
         </View>
       )
     }
+    let languages = []
     const readme = r.readme && r.readme.text ? marked(r.readme.text) : ''
+    if (r.languages && r.languages.items) {
+      // r.languages.totalSize
+      languages = r.languages.items.map((l) => {
+        const rate = l.size / r.languages.totalSize
+        return {
+          ...l,
+          rate: rate * 100,
+          width: (this.width - 20) * rate,
+        }
+      })
+    }
+
     return (
       <View style={styles.container}>
         <ScrollView style={{ flex: 1 }}>
@@ -115,9 +128,21 @@ export default connect(
               <Text>{r.description ? r.description : '(no description)'}</Text>
             </View>
 
-            {r.languages && r.languages.items && r.languages.items.map(l => (
-              <Text key={l.id}>{l.size} {l.name}</Text>
-            ))}
+            <View style={{ width: this.width, flexDirection: 'row' }}>
+              {languages.map(l => (
+                <View key={l.id} style={{ width: l.width, backgroundColor: l.color, height: 10 }} />
+              ))}
+            </View>
+
+            <View style={{ marginTop: 10 }}>
+              {languages.map(l => (
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <View style={{ backgroundColor: l.color, width: 6, height: 6, borderRadius: 3 }} />
+                  <Text>{' '}</Text>
+                  <Text style={{ fontSize: 11.5 }} key={l.id}>{l.name} {l.rate.toFixed(1)}%</Text>
+                </View>
+              ))}
+            </View>
 
             {r.repositoryTopics.length > 0 ?
               <View style={{ marginTop: 20, flexDirection: 'row', flexWrap: 'wrap' }}>
