@@ -81,5 +81,4 @@ export const signin = (username, accessToken) => ({
 
 export const signout = () => ({
   type: 'SIGNOUT',
-  provider: 'github',
 })

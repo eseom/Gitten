@@ -62,7 +62,6 @@ export const reducer = (state = initialState, action) => {
 
 export const fetchRepositories = login =>
   async (dispatch, getState) => {
-    const accessToken = getState().app.accessToken
     // dispatch({
     //   type: 'FETCH_REPOSITORIES',
     // })
@@ -71,7 +70,6 @@ export const fetchRepositories = login =>
       url: 'https://api.github.com/graphql',
       headers: {
         Accept: 'application/json',
-        authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       data: {

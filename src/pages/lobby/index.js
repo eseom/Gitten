@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 
 import styles from './styles'
 import Component from '../base'
-import { selectUser } from '../../redux/app'
+import { selectUser, signout } from '../../redux/app'
 import { iconsMap } from '../../utils/AppIcons'
 import { getTitle } from '../../utils'
 import { navigatorStyle as commonNavigatorStyle } from '../../styles' // eslint-disable-line
@@ -101,6 +101,10 @@ export default connect(
   static navigatorStyle = { ...commonNavigatorStyle }
 
   state = {
+  }
+
+  componentWillMount() {
+    this.props.dispatch(signout())
   }
 
   async _onNavigatorEvent(event) {

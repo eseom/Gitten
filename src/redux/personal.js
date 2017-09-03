@@ -20,13 +20,11 @@ export default function (state = initialState, action) {
 
 export const fetchLast20Issues = callback =>
   async (dispatch, getState) => {
-    const accessToken = getState().app.accessToken
     axios({
       method: 'POST',
       url: 'https://api.github.com/graphql',
       headers: {
         Accept: 'application/json',
-        authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       data: {

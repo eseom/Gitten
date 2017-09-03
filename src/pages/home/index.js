@@ -12,6 +12,7 @@ import { Navigation } from 'react-native-navigation'
 import { connect } from 'react-redux'
 
 import { iconsMap } from '../../utils/AppIcons'
+import { signout } from '../../redux/app'
 import { fetchLast20Issues } from '../../redux/personal'
 import styles from './styles'
 import Component from '../base'
@@ -77,6 +78,7 @@ export default connect(
         animated: true,
       })
     } else if (event.id === 'signout') {
+      this.props.dispatch(signout())
       Navigation.startSingleScreenApp({
         screen: {
           screen: 'app.Lobby',
