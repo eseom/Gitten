@@ -89,7 +89,7 @@ prepareStore().then((store) => {
     Navigation.startSingleScreenApp({
       screen: {
         screen: 'app.Lobby',
-        title: 'gitten',
+        title: 'Gitten',
         subtitle: 'Lobby',
         navigatorStyle: {
         },
