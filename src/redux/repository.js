@@ -1,10 +1,8 @@
 import axios from 'axios'
-import base64 from 'base-64'
 
 const initialState = {
   repository: null,
   repositories: {},
-
   trends: [],
   commits: [],
 }
@@ -48,7 +46,7 @@ export const reducer = (state = initialState, action) => {
     case 'FETCH_TRENDS': {
       return {
         ...state,
-        trends: action.repositories,
+        trends: action.data,
       }
     }
     case 'FETCH_COMMITS': {
@@ -62,44 +60,12 @@ export const reducer = (state = initialState, action) => {
   }
 }
 
-export const fetchRepositories = username =>
-  async (dispatch, getState) => {
-    const now = new Date()
-    now.setDate(now.getDate() - 7)
-    const targetDate = yyyymmdd(now)
-    const accessToken = getState().app.accessToken
-
-    dispatch({
-      type: 'START_FETCH_TREND',
-    })
-    axios({
-      method: 'GET',
-      url: `https://api.github.com/users/${username}/repos?type=all&sort=updated&direction=desc`,
-      headers: {
-        Accept: 'application/json',
-        authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    })
-      .then(response => response.data)
-      .then((data) => {
-        dispatch({
-          type: 'FETCH_REPOSITORIES',
-          username,
-          data,
-        })
-      })
-      .catch((e) => {
-        console.log(e)
-      })
-  }
-
-export const fetchRepositoriesGraphql = username =>
+export const fetchRepositories = login =>
   async (dispatch, getState) => {
     const accessToken = getState().app.accessToken
-    dispatch({
-      type: 'FETCH_REPOSITORIES',
-    })
+    // dispatch({
+    //   type: 'FETCH_REPOSITORIES',
+    // })
     axios({
       method: 'POST',
       url: 'https://api.github.com/graphql',
@@ -110,10 +76,14 @@ export const fetchRepositoriesGraphql = username =>
       },
       data: {
         query: `{
-          viewer {
-            repositories(orderBy: {field: UPDATED_AT, direction: DESC}, first: 100) {
-              edges {
-                node {
+          search(first: 100, query: "user:${login}", type: REPOSITORY) {
+            edges {
+              node {
+                ... on Repository {
+                  owner {
+                    login
+                    avatarUrl
+                  }
                   name
                   updatedAt
                   stargazers {
@@ -133,8 +103,8 @@ export const fetchRepositoriesGraphql = username =>
       .then((data) => {
         dispatch({
           type: 'FETCH_REPOSITORIES',
-          username,
-          data: data.viewer.repositories.edges.map(e => e.node),
+          username: login,
+          data: data.search.edges.map(e => e.node),
         })
       })
       .catch((e) => {
@@ -143,71 +113,6 @@ export const fetchRepositoriesGraphql = username =>
   }
 
 export const fetchRepository = (owner, repo) =>
-  async (dispatch, getState) => {
-    const accessToken = getState().app.accessToken
-    dispatch({
-      type: 'START_FETCH_REPOSITORY',
-    })
-    const data = await axios({
-      method: 'GET',
-      url: `https://api.github.com/repos/${owner}/${repo}`,
-      // url: 'https://api.github.com/graphql',
-      headers: {
-        Accept: 'application/json',
-        authorization: `Bearer ${accessToken}`,
-      },
-    })
-      .then(response => response.data)
-
-    const promises = []
-
-    promises.push(axios({
-      method: 'GET',
-      url: data.languages_url,
-      headers: {
-        Accept: 'application/json',
-        authorization: `Bearer ${accessToken}`,
-      },
-    })
-      .then(response => response.data))
-
-    promises.push(axios({
-      method: 'GET',
-      url: `https://api.github.com/repos/${owner}/${repo}/topics`,
-      headers: {
-        Accept: 'application/vnd.github.mercy-preview+json',
-        authorization: `Bearer ${accessToken}`,
-      },
-    })
-      .then(response => response.data.names))
-
-    promises.push(axios({
-      method: 'GET',
-      url: `https://api.github.com/repos/${owner}/${repo}/contents/README.md`,
-      headers: {
-        Accept: 'application/vnd.github.mercy-preview+json',
-        authorization: `Bearer ${accessToken}`,
-      },
-    })
-      .then(response => response.data.content)
-      .catch(e => e.reponse))
-
-    const result = await Promise.all(promises)
-
-    data.languages = result[0]
-    data.topics = result[1]
-    data.content = ''
-    try {
-      data.content = base64.decode(result[2].replace(/\\n/g, '')).toString()
-    } catch (e) { }
-
-    dispatch({
-      type: 'FETCH_REPOSITORY',
-      repository: data,
-    })
-  }
-
-export const fetchRepositoryGraphql = (owner, repo) =>
   async (dispatch, getState) => {
     const accessToken = getState().app.accessToken
     dispatch({
@@ -222,69 +127,95 @@ export const fetchRepositoryGraphql = (owner, repo) =>
       },
       data: {
         query: `{
-          repo: search(first: 1, query: "${owner}/${repo}", type: REPOSITORY) {
-            edges {
-              node {
-                ... on Repository {
-                  owner {
-                    login
-                  }
-                  name
-                  commitComments(last: 1) {
-                    edges {
-                      node {
-                        body
-                      }
-                    }
-                  }
-                  languages(last: 100) {
-                    edges {
-                      node {
-                        color
-                        name
-                      }
-                    }
-                  }
-                  repositoryTopics(last: 100) {
-                    edges {
-                      node {
-                        topic {
-                          name
-                        }
-                      }
-                    }
-                  }
-                  forks {
-                    totalCount
-                  }
-                  stargazers {
-                    totalCount
-                  } 
-                  description
-                  isFork
+          repository(owner: "${owner}", name: "${repo}") {
+            readme: object(expression: "master:README.md") {
+              ... on Blob {
+                text
+              }
+            }
+            parent {
+              id
+            }
+            codeOfConduct {
+              body
+              key
+              name
+              url
+            }
+            primaryLanguage {
+              id
+              name
+              color
+            }
+            viewerHasStarred
+            languages(last: 100) {
+              totalCount
+              totalSize
+              edges {
+                size
+                node {
                   id
-                  url
-                  isPrivate
-                  pullRequests(first: 20, orderBy: {field: UPDATED_AT direction: DESC}) {
-                    edges {
-                      node {
-                          title
-                      }
-                    }
+                  name
+                  color
+                }
+              }
+            }
+            owner {
+              login
+            }
+            name
+            commitComments(last: 1) {
+              edges {
+                node {
+                  body
+                }
+              }
+            }
+            repositoryTopics(last: 100) {
+              edges {
+                node {
+                  topic {
+                    name
                   }
                 }
               }
             }
+            forks {
+              totalCount
+            }
+            stargazers {
+              totalCount
+            }
+            watchers {
+              totalCount
+            }
+            description
+            isFork
+            id
+            url
+            isPrivate
+            pullRequests(first: 20, orderBy: {field: UPDATED_AT, direction: DESC}) {
+              edges {
+                node {
+                  title
+                }
+              }
+            }
           }
-        }`,
+        }
+        `,
       },
     })
       .then(response => response.data.data)
       .then((data) => {
-        console.log(data)
+        const r = data.repository
+        r.repositoryTopics = r.repositoryTopics.edges.map(t => t.node)
+        r.languages.items = r.languages.edges.map((t) => {
+          return { ...t.node, size: t.size }
+        })
         dispatch({
           type: 'FETCH_REPOSITORY',
-          repository: data.repo.edges[0].node,
+          repository: r,
         })
       })
       .catch((e) => {
@@ -302,25 +233,48 @@ export const fetchTrends = () =>
     now.setDate(now.getDate() - 7)
     const targetDate = yyyymmdd(now)
     const accessToken = getState().app.accessToken
-
     axios({
-      method: 'GET',
-      url: `https://api.github.com/search/repositories?sort=stars&order=desc&q=language:java&q=created:>${targetDate}`,
+      method: 'POST',
+      url: 'https://api.github.com/graphql',
       headers: {
         Accept: 'application/json',
         authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/x-www-form-urlencoded',
       },
+      data: {
+        query: `{
+          search(first: 100, query: "language:java created:>${targetDate}", type: REPOSITORY) {
+            edges {
+              node {
+                ... on Repository {
+                  owner {
+                    login
+                    avatarUrl
+                  }
+                  name
+                  updatedAt
+                  stargazers {
+                    totalCount
+                  }
+                  forks {
+                    totalCount
+                  }
+                }
+              }
+            }
+          }
+        }`,
+      },
     })
-      .then(response => response.data)
+      .then(response => response.data.data)
       .then((data) => {
         dispatch({
           type: 'FETCH_TRENDS',
-          repositories: data.items,
+          data: data.search.edges.map(e => e.node),
         })
       })
       .catch((e) => {
-        console.log(e)
+        console.error('request error', e)
       })
   }
 
@@ -340,27 +294,26 @@ export const fetchCommits = (owner, repo, callback) =>
       },
       data: {
         query: `{
-          repository(owner: "${owner}", name: "${repo}") {
-            ref(qualifiedName: "master") {
-              target {
-                ... on Commit {
-                  id
-                  history(first: 50) {
-                    pageInfo {
-                      hasNextPage
-                    }
-                    edges {
-                      node {
-                        committedDate
-                        messageHeadline
-                        oid
-                        message
-                        author {
-                          avatarUrl
-                          name
-                          email
-                          date
-                        }
+        repository(owner: "${owner}", name: "${repo}") {
+          ref(qualifiedName: "master") {
+            target {
+              ... on Commit {
+                id
+                history(first: 50) {
+                  pageInfo {
+                    hasNextPage
+                  }
+                  edges {
+                    node {
+                      committedDate
+                      messageHeadline
+                      oid
+                      message
+                      author {
+                        avatarUrl
+                        name
+                        email
+                        date
                       }
                     }
                   }
@@ -368,7 +321,8 @@ export const fetchCommits = (owner, repo, callback) =>
               }
             }
           }
-        }`,
+        }
+      }`,
       },
     })
       .then(response => response.data.data)

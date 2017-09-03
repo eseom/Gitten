@@ -127,33 +127,18 @@ export default connect(
   }
 
   _renderRow(item, sectionKey) {
-    const p = item.full_name.split('/')
-    const owner = p[0]
-    const repo = p[1]
     return (
       <RepoCard
-        item={item}
+        style={{ width: this.width, borderBottomColor: '#ddd', borderBottomWidth: 1 }}
+        owner={item.owner}
+        updatedAt={item.updatedAt}
+        stargazers={item.stargazers}
+        forks={item.forks}
+        name={item.name}
         onPress={() => {
           this.pushRepository(item.owner.login, item.name)
         }}
       />
-    )
-    return (
-      <View style={{ width: this.width, padding: 10, paddingLeft: 14, borderBottomColor: '#ddd', borderBottomWidth: 1 }}>
-        <TouchableHighlight
-          underlayColor="transparent"
-          onPress={() => {
-            this.pushRepository(owner, repo)
-          }}
-        >
-          <View style={{ flexDirection: 'row' }}>
-            <View style={{ flex: 1, flexDirection: 'row' }}>
-              <Text numberOfLines={1} style={{ flex: 1 }} ellipsizeMode="tail">{item.name}</Text>
-              <Text ellipsizeMode="tail" style={{ alignContent: 'flex-end', fontSize: 12 }}>{transDate(item.updated_at)}</Text>
-            </View>
-          </View>
-        </TouchableHighlight>
-      </View>
     )
   }
 

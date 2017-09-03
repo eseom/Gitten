@@ -1,13 +1,11 @@
 import React from 'react'
 import {
-  TouchableHighlight,
   RefreshControl,
   ListView,
   View,
   Text,
 } from 'react-native'
 import { connect } from 'react-redux'
-import Icon from 'react-native-vector-icons/FontAwesome'
 
 import { fetchRepositories } from '../../redux/repository'
 import styles from './styles'
@@ -96,9 +94,14 @@ export default connect(
   _renderRow(item, sectionKey) {
     return (
       <RepoCard
-        item={item}
+        style={{ width: this.width, borderBottomColor: '#ddd', borderBottomWidth: 1 }}
+        owner={item.owner}
+        updatedAt={item.updatedAt}
+        stargazers={item.stargazers}
+        forks={item.forks}
+        name={item.name}
         onPress={() => {
-          this.pushRepository(this.props.user.login, item.name)
+          this.pushRepository(item.owner.login, item.name)
         }}
       />
     )

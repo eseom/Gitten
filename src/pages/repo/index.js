@@ -80,7 +80,7 @@ export default connect(
         </View>
       )
     }
-    r.content = r.content ? marked(r.content) : ''
+    const readme = r.readme && r.readme.text ? marked(r.readme.text) : ''
     return (
       <ScrollView style={styles.container}>
         <View style={{ padding: 10 }}>
@@ -88,17 +88,17 @@ export default connect(
             <Text>{r.description ? r.description : '(no description)'}</Text>
           </View>
 
-          {Object.keys(r.languages).map(l => (
-            <Text key={l}>{l} {r.languages[l]}</Text>
+          {r.languages.items.map(l => (
+            <Text key={l.id}>{l.size} {l.name}</Text>
           ))}
 
-          {r.topics.length > 0 ?
+          {r.repositoryTopics.length > 0 ?
             <View style={{ marginTop: 20, flexDirection: 'row', flexWrap: 'wrap' }}>
-              {r.topics.map((t, i) => (
+              {r.repositoryTopics.map((t, i) => (
                 <Badge
                   key={i}
                   containerStyle={{ marginBottom: 4, marginRight: 4 }}
-                  value={t}
+                  value={t.topic.name}
                   textStyle={{ color: 'white' }}
                 />
               ))}
@@ -108,15 +108,15 @@ export default connect(
           <View style={{ flexDirection: 'row', borderWidth: 1, borderColor: '#ddd', marginTop: 10 }}>
             <View style={{ flexDirection: 'row', padding: 10, flex: 1, justifyContent: 'center' }}>
               <Icon name="star" style={{ fontSize: 15, marginRight: 5 }} />
-              <Text>{r.stargazers_count}</Text>
+              <Text>{r.stargazers.totalCount}</Text>
             </View>
             <View style={{ flexDirection: 'row', padding: 10, flex: 1, justifyContent: 'center', borderLeftWidth: 1, borderColor: '#ddd' }}>
               <Icon name="repo-forked" style={{ fontSize: 15, marginRight: 5 }} />
-              <Text>{r.forks_count}</Text>
+              <Text>{r.forks.totalCount}</Text>
             </View>
             <View style={{ flexDirection: 'row', padding: 10, flex: 1, justifyContent: 'center', borderLeftWidth: 1, borderColor: '#ddd' }}>
               <Icon name="eye" style={{ fontSize: 15, marginRight: 5 }} />
-              <Text>{r.subscribers_count}</Text>
+              <Text>{r.watchers.totalCount}</Text>
             </View>
           </View>
 
@@ -162,7 +162,6 @@ export default connect(
             </List>
           </View>
 
-
           {/* <View style={{ flexDirection: 'row' }}>
             <Icon name="link-external" style={{ fontSize: 18, alignItems: 'center' }} />
             <Text>{r.html_url}</Text>
@@ -176,7 +175,7 @@ export default connect(
           scrollEnabled={false}
           injectedJavaScript={injectScript}
           startInLoadingState
-          source={{ html: customStyle + r.content }}
+          source={{ html: customStyle + readme }}
           onMessage={this.onMessage}
         />
       </ScrollView>

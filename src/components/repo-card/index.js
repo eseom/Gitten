@@ -18,9 +18,9 @@ const transDate = (dateString) => {
 export default class extends Component {
   render() {
     const avatarWidth = 42
-    const { item } = this.props
+    const { name, owner, updatedAt, stargazers, forks, style = {}  } = this.props
     return (
-      <View style={{ width: this.width, borderBottomColor: '#ddd', borderBottomWidth: 1 }}>
+      <View style={style}>
         <TouchableHighlight
           style={{ padding: 10 }}
           underlayColor="#EFEFEF"
@@ -30,7 +30,7 @@ export default class extends Component {
         >
           <View style={{ flexDirection: 'row' }}>
             <Image
-              source={{ uri: item.owner.avatar_url }}
+              source={{ uri: owner.avatarUrl }}
               style={{
                 marginRight: 10,
                 width: avatarWidth,
@@ -40,21 +40,21 @@ export default class extends Component {
             />
             <View style={{ flex: 1, flexDirection: 'column' }}>
               <View style={{ flex: 1, flexDirection: 'row' }}>
-                <Text numberOfLines={1} style={{ flex: 1 }} ellipsizeMode="tail">{item.full_name}</Text>
-                <Text ellipsizeMode="tail" style={{ alignContent: 'flex-end', fontSize: 12 }}>{transDate(item.updated_at)}</Text>
+                <Text numberOfLines={1} style={{ flex: 1 }} ellipsizeMode="tail">{owner.login}/{name}</Text>
+                <Text ellipsizeMode="tail" style={{ alignContent: 'flex-end', fontSize: 12 }}>{transDate(updatedAt)}</Text>
               </View>
               <View style={{ flex: 1, flexDirection: 'row' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Icon name="star" />
                   <Text>{' '}</Text>
-                  <Text>{item.stargazers_count}</Text>
+                  <Text>{stargazers.totalCount}</Text>
                 </View>
                 <Text>{' '}</Text>
                 <Text>{' '}</Text>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Icon name="repo-forked" />
                   <Text>{' '}</Text>
-                  <Text>{item.forks_count}</Text>
+                  <Text>{forks.totalCount}</Text>
                 </View>
               </View>
             </View>

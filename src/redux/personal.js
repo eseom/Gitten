@@ -35,8 +35,18 @@ export const fetchLast20Issues = callback =>
             repositories(orderBy: {field: UPDATED_AT direction: DESC}, first: 20) {
               edges {
                 node {
+                  owner {
+                    login
+                    avatarUrl
+                  }
                   name
                   updatedAt
+                  stargazers {
+                    totalCount
+                  }
+                  forks {
+                    totalCount
+                  }
                 }
               }
             }

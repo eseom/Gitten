@@ -16,6 +16,7 @@ import { fetchLast20Issues } from '../../redux/personal'
 import styles from './styles'
 import Component from '../base'
 import { navigatorStyle as commonNavigatorStyle } from '../../styles' // eslint-disable-line
+import RepoCard from '../../components/repo-card'
 
 const transDate = (dateString) => {
   const time = new Date(dateString)
@@ -152,7 +153,7 @@ export default connect(
   }
 
   _renderRow(item, sectionKey) {
-    return (
+    return (sectionKey === 'last20Issues' ? (
       <View style={{ width: this.width, borderBottomColor: '#ddd', borderBottomWidth: 1 }}>
         <TouchableHighlight
           style={{ padding: 10 }}
@@ -162,17 +163,22 @@ export default connect(
           }}
         >
           <View style={{ flexDirection: 'row' }}>
-            {sectionKey === 'last20Issues' ?
-              <Text numberOfLines={1} style={{ flex: 1 }} ellipsizeMode="tail">{item.title}</Text>
-              :
-              <View style={{ flex: 1, flexDirection: 'row' }}>
-                <Text numberOfLines={1} style={{ flex: 1 }} ellipsizeMode="tail">{item.name}</Text>
-                <Text ellipsizeMode="tail" style={{ alignContent: 'flex-end', fontSize: 12 }}>{transDate(item.updatedAt)}</Text>
-              </View>
-            }
+            <Text numberOfLines={1} style={{ flex: 1 }} ellipsizeMode="tail">{item.title}</Text>
           </View>
         </TouchableHighlight>
       </View>
+    ) :
+      <RepoCard
+        style={{ width: this.width, borderBottomColor: '#ddd', borderBottomWidth: 1 }}
+        owner={item.owner}
+        updatedAt={item.updatedAt}
+        stargazers={item.stargazers}
+        forks={item.forks}
+        name={item.name}
+        onPress={() => {
+          this.pushRepository(item.owner.login, item.name)
+        }}
+      />
     )
   }
 
