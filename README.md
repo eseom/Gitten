@@ -10,13 +10,21 @@ react-native-navigation@1.1.178
 
 ### FEATURES
 
-- react-native-navigation by Wix
+- [react-native-navigation](https://github.com/wix/react-native-navigation) by Wix
 - redux structure with react-native-persist
-- ios and android
+- github v4 graphql
+- for both IOS and Android
 
 ### Running your project
 
 ##### for react-native-config
+register github oauth application with
+Authorization callback URL
+```
+http://localhost/github
+```
+
+and make a .env file with **the client id and secret**
 ```
 # .env
 GITHUB_CLIENT_ID=<clientId>
